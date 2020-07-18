@@ -40,8 +40,8 @@ window = 0
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
-def InitGL(Width, Height):  # We call this right after our OpenGL window is created.
-    glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black
+def InitGL(width, height):  # We call this right after our OpenGL window is created.
+    glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black: RGBA
     glClearDepth(1.0)  # Enables Clearing Of The Depth Buffer
     glDepthFunc(GL_LESS)  # The Type Of Depth Test To Do
     glEnable(GL_DEPTH_TEST)  # Enables Depth Testing
@@ -50,20 +50,20 @@ def InitGL(Width, Height):  # We call this right after our OpenGL window is crea
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()  # Reset The Projection Matrix
     # Calculate The Aspect Ratio Of The Window
-    gluPerspective(45.0, float(Width) / float(Height), 0.1, 100.0)
+    gluPerspective(45.0, float(width) / float(height), 0.1, 100.0)
 
     glMatrixMode(GL_MODELVIEW)
 
 
 # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
-def ReSizeGLScene(Width, Height):
-    if Height == 0:  # Prevent A Divide By Zero If The Window Is Too Small
-        Height = 1
+def ReSizeGLScene(width, height):
+    if height == 0:  # Prevent A Divide By Zero If The Window Is Too Small
+        height = 1
 
-    glViewport(0, 0, Width, Height)  # Reset The Current Viewport And Perspective Transformation
+    glViewport(0, 0, width, height)  # Reset The Current Viewport And Perspective Transformation
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(45.0, float(Width) / float(Height), 0.1, 100.0)
+    gluPerspective(45.0, float(width) / float(height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
 
 
@@ -73,7 +73,7 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()  # Reset The View
 
-    #  since this is double buffered, swap the buffers to display what just got drawn.
+    # since this is double buffered, swap the buffers to display what just got drawn.
     glutSwapBuffers()
 
 
@@ -87,13 +87,14 @@ def keyPressed(*args):
 
 def main():
     global window
+
     # For now we just pass glutInit one empty argument. I wasn't sure what should or could be passed in (tuple, list, ...)
     # Once I find out the right stuff based on reading the PyOpenGL source, I'll address this.
     glutInit("")
 
     # Select type of Display mode:
-    #  Double buffer
-    #  RGBA color
+    # RGBA color
+    # Double buffer
     # Alpha components supported
     # Depth buffer
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
@@ -104,9 +105,6 @@ def main():
     # the window starts at the upper left corner of the screen
     glutInitWindowPosition(0, 0)
 
-    # Okay, like the C version we retain the window id to use when closing, but for those of you new
-    # to Python (like myself), remember this assignment would make the variable local and not global
-    # if it weren't for the global declaration at the start of main.
     window = glutCreateWindow("Jeff Molofee's GL Code Tutorial ... NeHe '99")
 
     # Register the drawing function with glut, BUT in Python land, at least using PyOpenGL, we need to
