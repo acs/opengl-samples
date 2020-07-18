@@ -59,6 +59,7 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     # 45 degrees, aspect ratio and z visible range (clipping)
+    # argNames=('fovy', 'aspect', 'zNear', 'zFar'),
     gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
     # Moving back 5 units
     glTranslatef(0.0, 0.0, -5)
@@ -69,7 +70,7 @@ def main():
                 pygame.quit()
                 quit()
 
-        # angle, x, y, z
+        # angle, rx, ry, rz
         glRotatef(1, 3, 1, 1)
         # clear the OpenGL canvas
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
