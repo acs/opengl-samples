@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 # https://github.com/gamedev-net/nehe-opengl/blob/master/python/lesson01/ztvE1/lesson1.py
-# !/usr/bin/env python
 
 #
 # This code was created by Richard Campbell '99 (ported to Python/PyOpenGL by John Ferguson 2000)
@@ -33,7 +33,8 @@ from OpenGL.GLU import *
 
 # Some api in the chain is translating the keystrokes to this octal string
 # so instead of saying: ESCAPE = 27, we use the following.
-ESCAPE = '\033'
+ESCAPE = b'\x1b'
+CTRLC= b'\x03'
 
 # Number of the glut window.
 window = 0
@@ -80,7 +81,7 @@ def DrawGLScene():
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)
 def keyPressed(*args):
     # If escape is pressed, kill everything.
-    if args[0] == ESCAPE:
+    if args[0] in [ESCAPE, CTRLC]:
         glutDestroyWindow(window)
         sys.exit()
 
@@ -131,7 +132,6 @@ def main():
     glutMainLoop()
 
 
-# Print message to console, and kick off the main to get it rolling.
-print("Hit ESC key to quit.")
-main()
+if __name__ == '__main__':
+    main()
 
