@@ -31,8 +31,6 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-# Some api in the chain is translating the keystrokes to this octal string
-# so instead of saying: ESCAPE = 27, we use the following.
 ESCAPE = b'\x1b'
 CTRLC= b'\x03'
 
@@ -72,7 +70,7 @@ def ReSizeGLScene(width, height):
 def DrawGLScene():
     # Clear The Screen And The Depth Buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()  # Reset The View
+    glLoadIdentity()  # Reset The View: go to the center
 
     # since this is double buffered, swap the buffers to display what just got drawn.
     glutSwapBuffers()

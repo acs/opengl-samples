@@ -32,9 +32,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 
-# Some api in the chain is translating the keystrokes to this octal string
-# so instead of saying: ESCAPE = 27, we use the following.
-ESCAPE = '\033'
+ESCAPE = b'\x1b'
+CTRLC= b'\x03'
 
 # Number of the glut window.
 window = 0
@@ -78,7 +77,9 @@ def DrawGLScene():
     glTranslatef(-1.5, 0.0, -6.0)
 
     # Draw a triangle
-    glBegin(GL_POLYGON)  # Start drawing a polygon
+    # glBegin(GL_POLYGON)  # Start drawing a polygon
+    # https://community.khronos.org/t/drawing-speed-gl-triangles-vs-gl-polygon/59284
+    glBegin(GL_TRIANGLES)  # Doing it as a triangle probably it is faster
     glVertex3f(0.0, 1.0, 0.0)  # Top
     glVertex3f(1.0, -1.0, 0.0)  # Bottom Right
     glVertex3f(-1.0, -1.0, 0.0)  # Bottom Left
@@ -102,7 +103,7 @@ def DrawGLScene():
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)
 def keyPressed(*args):
     # If escape is pressed, kill everything.
-    if args[0] == ESCAPE:
+    if args[0] in [ESCAPE, CTRLC]:
         glutDestroyWindow(window)
         sys.exit()
 
