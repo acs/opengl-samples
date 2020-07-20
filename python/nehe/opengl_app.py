@@ -18,6 +18,10 @@ class OpenGLApp:
     window = 0
     width = 640
     height = 480
+
+    # Rotation
+    rotation_triangle = 0
+    rotation_square = 0
         
     # A general OpenGL initialization function.  Sets all of the initial parameters.
     def init_gl(self):  # We call this right after our OpenGL window is created.
