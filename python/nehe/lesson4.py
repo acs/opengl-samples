@@ -51,8 +51,8 @@ class Lesson4(OpenGLApp):
         glutSwapBuffers()
 
         # update rotation
-        self.rotation_triangle += 10
-        self.rotation_square += 10
+        self.rotation_triangle += 100
+        self.rotation_square += 100
 
 
 def main():
