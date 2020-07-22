@@ -25,19 +25,20 @@ class OpenGLApp:
     rotation_triangle = 0
     rotation_square = 0
 
-    texture = None
+    texture_id = None
 
     def load_gl_textures(self):
         # Based on http://www.magikcode.com/?p=122
+        # Nice place to get textures: https://www.texturex.com/
         # global texture
-        image = Image.open("data/NeHe.bmp")
+        image = Image.open("data/voxelers.bmp")
         image_data = numpy.array(list(image.getdata()), numpy.uint8)
 
         # Create Texture
         texture_id = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, texture_id)
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4)
-        glBindTexture(GL_TEXTURE_2D, texture_id)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
         # filtering to use when the image is larger (GL_TEXTURE_MAG_FILTER)
@@ -55,7 +56,7 @@ class OpenGLApp:
     # A general OpenGL initialization function.  Sets all of the initial parameters.
     def init_gl(self):  # We call this right after our OpenGL window is created.
 
-        self.load_gl_textures()
+        self.texture_id = self.load_gl_textures()
         glEnable(GL_TEXTURE_2D)
 
         glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black
