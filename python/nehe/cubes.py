@@ -78,7 +78,7 @@ class Cubes(OpenGLApp):
         # Clear The Screen And The Depth Buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        scale = 1
+        scale = 3
         z_distance = 25*scale
         x_distance = 5
 
