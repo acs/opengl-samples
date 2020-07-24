@@ -30,6 +30,9 @@ class OpenGLApp:
     x_rot = y_rot = 0
     x_rot_speed = y_rot_speed = 1
 
+    # Blending
+    blend = False
+
     # Lighting
     lights = False  # lights on/off
     # Ambient light is light that doesn't come from any particular direction.
@@ -84,8 +87,8 @@ class OpenGLApp:
 
         # Nice place to get textures: https://www.texturex.com/
         textures = [("data/voxelers.bmp", GL_NEAREST),
-                    ("data/NeHe.bmp", GL_LINEAR),
-                    ("data/voxelers.bmp", GL_LINEAR_MIPMAP_NEAREST)]
+                    ("data/NeHe.bmp", GL_LINEAR_MIPMAP_NEAREST),
+                    ("data/glass.bmp", GL_LINEAR)]
 
         for texture in textures:
             self.texture_ids.append(self.load_gl_texture(texture[0], texture[1]))
@@ -111,6 +114,10 @@ class OpenGLApp:
         gluPerspective(45.0, float(self.width) / float(self.height), 0.1, 100.0)
 
         glMatrixMode(GL_MODELVIEW)
+
+        # Blending
+        glColor4f(1.0,1.0,1.0,0.5)
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE)
     
     # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
     def resize_gl_scene(self, width, height):
@@ -156,6 +163,16 @@ class OpenGLApp:
         if args[0] == b't':
             self.texture_id +=1
             self.texture_id = self.texture_id % len(self.texture_ids)
+        if args[0] == b'b':
+            self.blend = not self.blend
+            if self.blend:
+                glEnable(GL_BLEND)
+                glDisable(GL_DEPTH_TEST)
+            else:
+                glDisable(GL_BLEND)
+                glEnable(GL_DEPTH_TEST)
+
+
 
 
     def main(self):
