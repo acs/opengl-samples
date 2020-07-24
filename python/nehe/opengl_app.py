@@ -11,30 +11,55 @@ import sys
 
 
 class OpenGLApp:
-    
+
+    # Keyboard
     ESCAPE_KEY = b'\x1b'
     CTRLC_KEY = b'\x03'
-    FULL_SCREEN_KEY = b'f'
-    
-    # Number of the glut window.
+
+    # GL Window
     window = 0
     width = 640
     height = 480
+    window_active = True
+    full_screen = False
+    z_deep = -5.0
 
     # Rotation
     rotation_triangle = 0
     rotation_square = 0
+    x_rot = y_rot = 0
+    x_rot_speed = y_rot_speed = 1
 
-    texture_id = None
+    # Lighting
+    lights = False  # lights on/off
+    # Ambient light is light that doesn't come from any particular direction.
+    # All the objects in your scene will be lit up by the ambient light
+    light_ambient = (0.5, 0.5, 0.5, 1.0)
+    # Diffuse light is created by your light source and is reflected off the surface of an object in your scene.
+    # Any surface of an object that the light hits directly will be very bright,
+    # and areas the light barely gets to will be darker. This creates a nice shading effect on the sides
+    light_diffuse = (1.0, 1.0, 1.0, 1.0)
+    # Light in front of the screen because of 2.0 z
+    light_position = (0.0, 0.0, 2.0, 1.0)
 
-    def load_gl_textures(self):
-        # Based on http://www.magikcode.com/?p=122
-        # Nice place to get textures: https://www.texturex.com/
-        # global texture
-        image = Image.open("data/voxelers.bmp")
+    # Textures
+    texture_id = 0
+    texture_ids = []
+
+    def load_gl_texture(self, image_path, filtering=GL_NEAREST):
+        """
+        Load a texture
+
+        :param image_path: path with the image path
+        :param filtering: GL_NEAREST (no filtering), GL_LINEAR (texture look smooth CPU/GPU intensive),
+        GL_LINEAR_MIPMAP_NEAREST (tries different texture resolutions)
+        :return:
+        """
+
+        image = Image.open(image_path)
         image_data = numpy.array(list(image.getdata()), numpy.uint8)
 
-        # Create Texture
+        # Create three Textures
         texture_id = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, texture_id)
 
@@ -54,22 +79,37 @@ class OpenGLApp:
         return texture_id
         
     # A general OpenGL initialization function.  Sets all of the initial parameters.
-    def init_gl(self):  # We call this right after our OpenGL window is created.
+    # We call this right after our OpenGL window is created.
+    def init_gl(self):
 
-        self.texture_id = self.load_gl_textures()
+        # Nice place to get textures: https://www.texturex.com/
+        textures = [("data/voxelers.bmp", GL_NEAREST),
+                    ("data/NeHe.bmp", GL_LINEAR),
+                    ("data/voxelers.bmp", GL_LINEAR_MIPMAP_NEAREST)]
+
+        for texture in textures:
+            self.texture_ids.append(self.load_gl_texture(texture[0], texture[1]))
+
         glEnable(GL_TEXTURE_2D)
 
         glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black
         glClearDepth(1.0)  # Enables Clearing Of The Depth Buffer
-        glDepthFunc(GL_LESS)  # The Type Of Depth Test To Do
+        glDepthFunc(GL_LEQUAL)  # The Type Of Depth Test To Do
         glEnable(GL_DEPTH_TEST)  # Enables Depth Testing
         glShadeModel(GL_SMOOTH)  # Enables Smooth Color Shading
-    
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)  # Really Nice Perspective
+
+        # Setup lighting
+        glLightfv(GL_LIGHT1, GL_AMBIENT, self.light_ambient)
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, self.light_diffuse)
+        glLightfv(GL_LIGHT1, GL_POSITION, self.light_position)
+        glEnable(GL_LIGHT1)  # Lights won't show until GL_LIGHTING is enabled
+
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()  # Reset The Projection Matrix
         # Calculate The Aspect Ratio Of The Window
         gluPerspective(45.0, float(self.width) / float(self.height), 0.1, 100.0)
-    
+
         glMatrixMode(GL_MODELVIEW)
     
     # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
@@ -94,14 +134,29 @@ class OpenGLApp:
         # since this is double buffered, swap the buffers to display what just got drawn.
         glutSwapBuffers()
 
-    # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)
+    # The function called whenever a key is pressed
     def key_pressed(self, *args):
         # If escape is pressed, kill everything.
         if args[0] in [self.ESCAPE_KEY, self.CTRLC_KEY]:
             glutDestroyWindow(self.window)
             sys.exit()
-        if args[0] in [self.FULL_SCREEN_KEY]:
-            glutFullScreen()
+
+        if args[0] == b'f':
+            glutFullScreenToggle()
+        if args[0] == b'l':
+            self.lights = not self.lights
+            if self.lights:
+                glEnable(GL_LIGHTING)
+            else:
+                glDisable(GL_LIGHTING)
+        if args[0] == b'w':
+            self.z_deep += 0.1
+        if args[0] == b's':
+            self.z_deep -= 0.1
+        if args[0] == b't':
+            self.texture_id +=1
+            self.texture_id = self.texture_id % len(self.texture_ids)
+
 
     def main(self):
         # For now we just pass glutInit one empty argument. I wasn't sure what should or could be passed in (tuple, list, ...)

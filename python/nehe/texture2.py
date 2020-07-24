@@ -6,7 +6,7 @@ from OpenGL.GLUT import *
 from opengl_app import OpenGLApp
 
 
-class Texture1(OpenGLApp):
+class Texture2(OpenGLApp):
 
     def cube_square_texture(self):
         # We have 8 vertex: 4 top square, 4 for bottom square
@@ -59,6 +59,9 @@ class Texture1(OpenGLApp):
         glRotatef(self.rotation_triangle, 1.0, 1.0, 1.0)
         self.rotation_triangle += 1
 
+        # Select texture
+        glBindTexture(GL_TEXTURE_2D, self.texture_ids[0])
+
         # Draw a square (quadrilateral)
         glBegin(GL_QUADS)
         self.cube_square_texture()
@@ -69,7 +72,7 @@ class Texture1(OpenGLApp):
 
 
 def main():
-    Texture1().main()
+    Texture2().main()
 
 
 if __name__ == '__main__':
