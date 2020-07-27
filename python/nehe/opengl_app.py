@@ -48,6 +48,10 @@ class OpenGLApp:
     # Textures
     texture_id = 0
     texture_ids = []
+    # Nice place to get textures: https://www.texturex.com/
+    textures = [("data/voxelers.bmp", GL_NEAREST),
+                ("data/NeHe.bmp", GL_LINEAR_MIPMAP_NEAREST),
+                ("data/glass.bmp", GL_LINEAR)]
 
     def load_gl_texture(self, image_path, filtering=GL_NEAREST):
         """
@@ -80,18 +84,16 @@ class OpenGLApp:
 
         image.close()
         return texture_id
-        
+
+    def load_textures(self, textures):
+        for texture in textures:
+            self.texture_ids.append(self.load_gl_texture(texture[0], texture[1]))
+
     # A general OpenGL initialization function.  Sets all of the initial parameters.
     # We call this right after our OpenGL window is created.
     def init_gl(self):
 
-        # Nice place to get textures: https://www.texturex.com/
-        textures = [("data/voxelers.bmp", GL_NEAREST),
-                    ("data/NeHe.bmp", GL_LINEAR_MIPMAP_NEAREST),
-                    ("data/glass.bmp", GL_LINEAR)]
-
-        for texture in textures:
-            self.texture_ids.append(self.load_gl_texture(texture[0], texture[1]))
+        self.load_textures(self.textures)
 
         glEnable(GL_TEXTURE_2D)
 
